@@ -2,7 +2,7 @@ ADS_OUT_ROOT = $${OUT_PWD}/..
 
 TARGET = AdvancedDockingSystemDemo
 DESTDIR = $${ADS_OUT_ROOT}/lib
-QT += core gui widgets quick quickwidgets
+QT += core gui widgets quick quickwidgets opengl
 
 include(../ads.pri)
 
@@ -10,6 +10,8 @@ lessThan(QT_MAJOR_VERSION, 6) {
     win32 {
         QT += axcontainer
     }
+} else {
+	QT +=  openglwidgets
 }
 
 CONFIG += c++14
@@ -26,14 +28,19 @@ HEADERS += \
 	MainWindow.h \
 	StatusDialog.h \
 	ImageViewer.h \
-	RenderWidget.h
+	RenderWidget.h \ 
+	glwidget.h \
+	logo.h
+	
 
 SOURCES += \
 	main.cpp \
 	MainWindow.cpp \
 	StatusDialog.cpp \
 	ImageViewer.cpp \
-	RenderWidget.cpp
+	RenderWidget.cpp \
+	glwidget.cpp \
+	logo.cpp
 
 FORMS += \
 	mainwindow.ui \

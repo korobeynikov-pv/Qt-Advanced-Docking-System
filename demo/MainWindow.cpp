@@ -85,6 +85,7 @@
 #include "StatusDialog.h"
 #include "DockSplitter.h"
 #include "ImageViewer.h"
+#include "glwidget.h"
 
 
 
@@ -658,6 +659,18 @@ void MainWindowPrivate::createActions()
 	a = Menu->addAction("Pinned Image Viewer");
 	_this->connect(a, SIGNAL(triggered()), SLOT(createImageViewer()));
 
+	a = ui.toolBar->addAction("Create OpenGL Viewer");
+	a->setToolTip("Creates a opengl widget for testing." );
+	a->setIcon(svgIcon(":/adsdemo/images/deployed_code.svg"));
+	QObject::connect(a, &QAction::triggered, _this, &CMainWindow::createOpenGlWidget);
+	ui.menuTests->addAction(a);
+
+	a = ui.toolBar->addAction("Apply VS Style");
+	a->setToolTip("Applies a Visual Studio light style (visual_studio_light.css)." );
+	a->setIcon(svgIcon(":/adsdemo/images/color_lens.svg"));
+	QObject::connect(a, &QAction::triggered, _this, &CMainWindow::applyVsStyle);
+	ui.menuTests->addAction(a);
+
 
 	ui.menuTests->addSeparator();
 	a = ui.menuTests->addAction("Show Status Dialog");
@@ -666,12 +679,6 @@ void MainWindowPrivate::createActions()
 	a = ui.menuTests->addAction("Toggle Label 0 Window Title");
 	_this->connect(a, SIGNAL(triggered()), SLOT(toggleDockWidgetWindowTitle()));
 	ui.menuTests->addSeparator();
-
-	a = ui.toolBar->addAction("Apply VS Style");
-	a->setToolTip("Applies a Visual Studio light style (visual_studio_light.css)." );
-	a->setIcon(svgIcon(":/adsdemo/images/color_lens.svg"));
-	QObject::connect(a, &QAction::triggered, _this, &CMainWindow::applyVsStyle);
-	ui.menuTests->addAction(a);
 }
 
 
@@ -1053,5 +1060,19 @@ void CMainWindow::lockWorkspace(bool Value)
 	{
 		d->DockManager->lockDockWidgetFeaturesGlobally(ads::CDockWidget::NoDockWidgetFeatures);
 	}
+}
+
+
+//============================================================================
+void CMainWindow::createOpenGlWidget()
+{
+	qDebug() << ":createOpenGlWidget ";
+	static int OpenGlWidgetCount = 0;
+
+	auto w = new GLWidget();
+	auto DockWidget = new ads::CDockWidget(QString("OpenGL Viewer %1").arg(OpenGlWidgetCount++));
+	DockWidget->setIcon(svgIcon(":/adsdemo/images/deployed_code.svg"));
+	DockWidget->setWidget(w, ads:: CDockWidget::ForceNoScrollArea);
+	d->DockManager->addDockWidget(ads::RightDockWidgetArea, DockWidget);
 }
 

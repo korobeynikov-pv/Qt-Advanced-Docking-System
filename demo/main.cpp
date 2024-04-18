@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QApplication>
 #include <QDebug>
+#include <QQuickWindow>
 
 #include <memory>
 
@@ -41,6 +42,7 @@ int main(int argc, char *argv[])
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 #endif
+    QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 	std::shared_ptr<int> b;
 	QApplication a(argc, argv);
 	a.setApplicationName("Advanced Docking System Demo");

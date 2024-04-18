@@ -39,5 +39,6 @@
         <file>images/lock_outline.svg</file>
         <file>images/lock.svg</file>
         <file>images/lock_open.svg</file>
+        <file>images/deployed_code.svg</file>
     </qresource>
 </RCC>

@@ -69,6 +69,7 @@ private slots:
 	void applyVsStyle();
 	void createImageViewer();
 	void lockWorkspace(bool Value);
+	void createOpenGlWidget();
 };
 
 #endif // MAINWINDOW_H
