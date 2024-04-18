@@ -64,6 +64,15 @@
 #include <QElapsedTimer>
 #include <QQuickWidget>
 
+#include <Inventor/Qt/SoQt.h>
+#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
+#include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/nodes/SoCone.h>
+#include <Inventor/nodes/SoBaseColor.h>
+
+#include <Quarter/QuarterWidget.h>
+#include <Quarter/Quarter.h>
+#include <Quarter/eventhandlers/DragDropHandler.h>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
 #include <QRandomGenerator>
@@ -665,6 +674,18 @@ void MainWindowPrivate::createActions()
 	QObject::connect(a, &QAction::triggered, _this, &CMainWindow::createOpenGlWidget);
 	ui.menuTests->addAction(a);
 
+	a = ui.toolBar->addAction("Create Coin3D Viewer");
+	a->setToolTip("Creates a Coin3D SoQt examine viewer for testing." );
+	a->setIcon(svgIcon(":/adsdemo/images/category.svg"));
+	QObject::connect(a, &QAction::triggered, _this, &CMainWindow::createCoin3DViewer);
+	ui.menuTests->addAction(a);
+
+	a = ui.toolBar->addAction("Create Quarter Viewer");
+	a->setToolTip("Creates a Coin3D Quarter examine viewer for testing." );
+	a->setIcon(svgIcon(":/adsdemo/images/category.svg"));
+	QObject::connect(a, &QAction::triggered, _this, &CMainWindow::createQuarterViewer);
+	ui.menuTests->addAction(a);
+
 	a = ui.toolBar->addAction("Apply VS Style");
 	a->setToolTip("Applies a Visual Studio light style (visual_studio_light.css)." );
 	a->setIcon(svgIcon(":/adsdemo/images/color_lens.svg"));
@@ -731,6 +752,9 @@ CMainWindow::CMainWindow(QWidget *parent) :
 	d->ui.setupUi(this);
 	setWindowTitle(QApplication::instance()->applicationName());
 	d->createActions();
+	SoQt::init(this);
+	SoDB::init();
+	SIM::Coin3D::Quarter::Quarter::init();
 
 	// uncomment the following line if the tab close button should be
 	// a QToolButton instead of a QPushButton
@@ -1074,5 +1098,62 @@ void CMainWindow::createOpenGlWidget()
 	DockWidget->setIcon(svgIcon(":/adsdemo/images/deployed_code.svg"));
 	DockWidget->setWidget(w, ads:: CDockWidget::ForceNoScrollArea);
 	d->DockManager->addDockWidget(ads::RightDockWidgetArea, DockWidget);
+}
+
+
+//============================================================================
+void CMainWindow::createCoin3DViewer()
+{
+	qDebug() << ":createCoin3DViewer ";
+	static int Coin3DWidgetCount = 0;
+	static SoSeparator* Root;
+	if (!Coin3DWidgetCount)
+	{
+		Root = new SoSeparator();
+		Root->ref();
+		auto Cone = new SoCone();
+		Root->addChild(Cone);
+	}
+
+	auto Viewer = new SoQtExaminerViewer(this, nullptr, true, SoQtFullViewer::BUILD_ALL);
+    Viewer->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
+    Viewer->setAnimationEnabled(false);
+    Viewer->setFeedbackVisibility(true);
+    Viewer->setSampleBuffers(4);
+    Viewer->setSceneGraph(Root);
+    //d->Viewer->setBackgroundColor(toSbColor(QColor(38, 38, 38)));
+	auto DockWidget = new ads::CDockWidget(QString("Coin3D Viewer %1").arg(Coin3DWidgetCount++));
+	DockWidget->setIcon(svgIcon(":/adsdemo/images/category.svg"));
+	DockWidget->setWidget(Viewer->getWidget(), ads:: CDockWidget::ForceNoScrollArea);
+	d->DockManager->addDockWidget(ads::LeftDockWidgetArea, DockWidget);
+}
+
+
+//============================================================================
+void CMainWindow::createQuarterViewer()
+{
+	qDebug() << ":createQuarterViewer ";
+	static int QuarterWidgetCount = 0;
+	static SoSeparator* Root;
+	if (!QuarterWidgetCount)
+	{
+		Root = new SoSeparator();
+		Root->ref();
+		SoBaseColor * col = new SoBaseColor;
+		col->rgb = SbColor(1, 1, 0);
+		Root->addChild(col);
+		Root->addChild(new SoCone);
+	}
+
+	using namespace SIM::Coin3D::Quarter;
+	auto Viewer = new QuarterWidget();
+    Viewer->setTransparencyType(QuarterWidget::SORTED_OBJECT_BLEND);
+    Viewer->setNavigationModeFile();
+    Viewer->setSceneGraph(Root);
+    //d->Viewer->setBackgroundColor(toSbColor(QColor(38, 38, 38)));
+	auto DockWidget = new ads::CDockWidget(QString("Quarter Viewer %1").arg(QuarterWidgetCount++));
+	DockWidget->setIcon(svgIcon(":/adsdemo/images/category.svg"));
+	DockWidget->setWidget(Viewer, ads:: CDockWidget::ForceNoScrollArea);
+	d->DockManager->addDockWidget(ads::LeftDockWidgetArea, DockWidget);
 }
 

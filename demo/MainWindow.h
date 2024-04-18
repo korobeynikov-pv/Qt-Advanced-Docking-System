@@ -70,6 +70,8 @@ private slots:
 	void createImageViewer();
 	void lockWorkspace(bool Value);
 	void createOpenGlWidget();
+	void createCoin3DViewer();
+	void createQuarterViewer();
 };
 
 #endif // MAINWINDOW_H
