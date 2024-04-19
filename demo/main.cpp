@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 #endif
 #endif
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
-	std::shared_ptr<int> b;
+    QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 	QApplication a(argc, argv);
 	a.setApplicationName("Advanced Docking System Demo");
 	a.setQuitOnLastWindowClosed(true);

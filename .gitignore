@@ -10,6 +10,7 @@ Makefile
 *.dll
 *.a
 build-*
+build_*
 
 # IDEs
 .idea
