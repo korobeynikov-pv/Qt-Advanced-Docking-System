@@ -1,6 +1,5 @@
 ADS_OUT_ROOT = $${OUT_PWD}/..
 
-include($$(cetoni_repository)/build/qt/qtprojectsettings/common.pri)
 
 TARGET = AdvancedDockingSystemDemo
 DESTDIR = $${ADS_OUT_ROOT}/lib
@@ -67,15 +66,13 @@ LIBS *= -lopengl32
 CONFIG(debug, debug|release){
         LIBS *= -llibSoQtd \
                 -llibCoin-80d \
-                -llibrlmdld \
-                -llibrlsgd \
-                -llibsolid3_d \
                 -lquarterd
 }else{
         LIBS *= -llibSoQt \
                 -llibCoin-80 \
-                -llibrlmdl \
-                -llibrlsg \
-                -llibsolid3 \
                 -lquarter
 }
+
+# Add your library search path for external libraries here that contain the
+# coin3d libraries
+#LIBS *= -LC:/CodingXP/mingw1120_64_qt6/usr/bin
